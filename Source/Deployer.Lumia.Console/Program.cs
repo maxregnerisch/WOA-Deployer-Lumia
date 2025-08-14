@@ -1,8 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ByteSizeLib;
 using CommandLine;
 using Deployer.Console;
 using Deployer.Lumia.Console.Options;
@@ -55,8 +54,11 @@ namespace Deployer.Lumia.Console
                         {
                             ImageIndex = opts.Index,
                             ImagePath = opts.WimImage,
-                            SizeReservedForWindows = ByteSize.FromGigaBytes(opts.ReservedSizeForWindowsInGb),
+                            SizeReservedForWindows = opts.ReservedSizeForWindowsInGb,
                             UseCompact = opts.UseCompact,
+                            ApplyMrosUI = opts.ApplyMrosUI,
+                            ApplyWindows12UI = opts.ApplyWindows12UI,
+                            Allow24H2On905With3GbRam = opts.Allow24H2On905With3GbRam,
                         };
                         return deployer.Deploy();
                     },
@@ -74,7 +76,7 @@ namespace Deployer.Lumia.Console
             return deployer;
         }
 
-        private static Task HandleErrors(IEnumerable<Error> errs)
+        private static Task HandleErrors(IEnumerable<e> errs)
         {
             var errors = string.Join("\n", errs.Select(x => x.Tag));
 
@@ -92,3 +94,4 @@ namespace Deployer.Lumia.Console
         }
     }  
 }
+

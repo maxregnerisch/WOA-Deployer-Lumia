@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -43,6 +43,7 @@ namespace Deployer.Lumia
             await DownloadDeploymentScripts();
             await RunDeploymentScript();
             await PatchBootManagerIfNeeded();
+            await ApplyCustomizations();
             await MoveMetadataToPhone();
             await PreparePhoneDiskForSafeRemoval();
         }
@@ -85,6 +86,35 @@ namespace Deployer.Lumia
             if (backUpEfiEsp != null)
             {
                 throw new InvalidOperationException("Your phone isn't fully unlocked! Please, return to WPInternals and complete the unlock process.");
+            }
+        }
+
+        private async Task ApplyCustomizations()
+        {
+            try
+            {
+                var options = context.DeploymentOptions;
+                var windowsVolume = await context.Device.GetWindowsPartition();
+                var windowsPath = windowsVolume.Root;
+
+                if (options.ApplyMrosUI)
+                {
+                    await UICustomizer.ApplyMrosUI(windowsPath);
+                }
+
+                if (options.ApplyWindows12UI)
+                {
+                    await UICustomizer.ApplyWindows12UI(windowsPath);
+                }
+
+                if (options.Allow24H2On905With3GbRam)
+                {
+                    await UICustomizer.Enable24H2On905With3GbRam(windowsPath);
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "Error applying customizations");
             }
         }
 
@@ -140,3 +170,4 @@ namespace Deployer.Lumia
         }
     }
 }
+
