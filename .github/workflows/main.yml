@@ -1,10 +1,10 @@
-name: Build WOA-Deployer-Lumia
+name: Build WOA Deployer
 
 on:
   push:
-    branches: [ master, develop, codegen-bot/* ]
+    branches: [ master, codegen-bot/v4-features-final ]
   pull_request:
-    branches: [ master, develop ]
+    branches: [ master ]
   workflow_dispatch:
 
 jobs:
@@ -12,64 +12,29 @@ jobs:
     runs-on: windows-latest
     
     steps:
-    - uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-        
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1.1
       
     - name: Setup NuGet
-      uses: NuGet/setup-nuget@v1.1.1
+      uses: NuGet/setup-nuget@v1
       
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: '6.0.x'
-        
     - name: Restore NuGet packages
-      run: nuget restore Source/Deployer.Lumia.sln
+      run: nuget restore Source/WOA-Deployer-Lumia.sln
       
     - name: Build solution
-      run: msbuild Source/Deployer.Lumia.sln /p:Configuration=Release /p:Platform="Any CPU"
+      run: msbuild Source/WOA-Deployer-Lumia.sln /p:Configuration=Release /p:Platform="Any CPU"
       
-    - name: Create artifact directory
-      run: mkdir artifacts
-      
-    - name: Copy build artifacts
-      run: |
-        cp -r Source/Deployer.Lumia.Gui/bin/Release/* artifacts/
-        cp -r Source/Deployer.Lumia/Core/Windows12 artifacts/Core/Windows12
-      shell: bash
-      
-    - name: Upload build artifacts
+    - name: Upload GUI artifact
       uses: actions/upload-artifact@v4
       with:
-        name: WOA-Deployer-Lumia-Windows12
-        path: artifacts/
+        name: WOA-Deployer-Lumia-GUI
+        path: Source/Deployer.Lumia.Gui/bin/Release/
         
-    - name: Create release ZIP
-      run: |
-        cd artifacts
-        7z a -tzip ../WOA-Deployer-Lumia-Windows12.zip *
-      shell: bash
-      if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/heads/codegen-bot/'))
-      
-    - name: Create release
-      uses: softprops/action-gh-release@v1
-      if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/heads/codegen-bot/'))
+    - name: Upload Console artifact
+      uses: actions/upload-artifact@v4
       with:
-        files: WOA-Deployer-Lumia-Windows12.zip
-        name: WOA-Deployer-Lumia Windows 12 Build
-        tag_name: windows12-build-${{ github.run_number }}
-        body: |
-          WOA-Deployer-Lumia with Windows 12 Concept UI
-          
-          This build includes:
-          - Windows 12 concept UI theme for Windows installation
-          - Support for 3GB RAM allocation
-          - Enhanced UI customizations
-          
-          Automated build from ${{ github.sha }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        name: WOA-Deployer-Lumia-Console
+        path: Source/Deployer.Lumia.Console/bin/Release/
