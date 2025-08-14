@@ -72,6 +72,145 @@ namespace Deployer.Lumia
             var path = dict[(phoneModel.Model, phoneModel.Variant)];
 
             await RunScript(path);
+            
+            var options = context.DeploymentOptions as WindowsDeploymentOptions;
+            if (options != null)
+            {
+                if (options.ApplyMrosUI)
+                {
+                    await ApplyMrosUI();
+                }
+                
+                if (options.ApplyWindows12UI)
+                {
+                    await ApplyWindows12UI();
+                }
+                
+                if (options.Allow24H2On905With3GbRam)
+                {
+                    await Enable24H2On905With3GbRam();
+                }
+            }
+        }
+        
+        private async Task ApplyMrosUI()
+        {
+            Log.Information("Applying MROS UI customizations...");
+            try
+            {
+                var windowsVolume = await context.Device.GetWindowsPartition();
+                var systemRoot = Path.Combine(windowsVolume.Root, "Windows");
+                
+                // Create MROS UI customization script
+                var scriptPath = Path.Combine(AppPaths.ArtifactDownload, "ApplyMrosUI.cmd");
+                var scriptContent = @"@echo off
+echo Applying MROS UI customizations...
+reg load HKLM\MROS_SOFTWARE %1\System32\config\SOFTWARE
+reg load HKLM\MROS_SYSTEM %1\System32\config\SYSTEM
+
+rem Apply MROS UI customizations
+reg add ""HKLM\MROS_SOFTWARE\Microsoft\Windows\CurrentVersion\Themes"" /v ""InstallTheme"" /t REG_EXPAND_SZ /d ""%1\Resources\Themes\mros.theme"" /f
+reg add ""HKLM\MROS_SOFTWARE\Microsoft\Windows\CurrentVersion\ThemeManager"" /v ""ThemeActive"" /t REG_SZ /d ""1"" /f
+reg add ""HKLM\MROS_SOFTWARE\Microsoft\Windows\CurrentVersion\ThemeManager"" /v ""DllName"" /t REG_EXPAND_SZ /d ""%1\Resources\Themes\mros.msstyles"" /f
+
+reg unload HKLM\MROS_SOFTWARE
+reg unload HKLM\MROS_SYSTEM
+echo MROS UI customizations applied successfully.
+";
+                await fileSystemOperations.WriteAllTextToFile(scriptPath, scriptContent);
+                
+                // Execute the script
+                await scriptRunner.Run(parser.Parse($"run-external \"{scriptPath}\" \"{systemRoot}\""));
+                
+                Log.Information("MROS UI customizations applied successfully.");
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Failed to apply MROS UI customizations");
+            }
+        }
+        
+        private async Task ApplyWindows12UI()
+        {
+            Log.Information("Applying Windows 12 UI customizations...");
+            try
+            {
+                var windowsVolume = await context.Device.GetWindowsPartition();
+                var systemRoot = Path.Combine(windowsVolume.Root, "Windows");
+                
+                // Create Windows 12 UI customization script
+                var scriptPath = Path.Combine(AppPaths.ArtifactDownload, "ApplyWindows12UI.cmd");
+                var scriptContent = @"@echo off
+echo Applying Windows 12 UI customizations...
+reg load HKLM\WIN12_SOFTWARE %1\System32\config\SOFTWARE
+reg load HKLM\WIN12_SYSTEM %1\System32\config\SYSTEM
+
+rem Apply Windows 12 UI customizations
+reg add ""HKLM\WIN12_SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced"" /v ""TaskbarAl"" /t REG_DWORD /d ""1"" /f
+reg add ""HKLM\WIN12_SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced"" /v ""TaskbarMn"" /t REG_DWORD /d ""0"" /f
+reg add ""HKLM\WIN12_SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced"" /v ""ShowTaskViewButton"" /t REG_DWORD /d ""0"" /f
+reg add ""HKLM\WIN12_SOFTWARE\Microsoft\Windows\CurrentVersion\Search"" /v ""SearchboxTaskbarMode"" /t REG_DWORD /d ""1"" /f
+reg add ""HKLM\WIN12_SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced"" /v ""Start_Layout"" /t REG_DWORD /d ""1"" /f
+
+reg unload HKLM\WIN12_SOFTWARE
+reg unload HKLM\WIN12_SYSTEM
+echo Windows 12 UI customizations applied successfully.
+";
+                await fileSystemOperations.WriteAllTextToFile(scriptPath, scriptContent);
+                
+                // Execute the script
+                await scriptRunner.Run(parser.Parse($"run-external \"{scriptPath}\" \"{systemRoot}\""));
+                
+                Log.Information("Windows 12 UI customizations applied successfully.");
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Failed to apply Windows 12 UI customizations");
+            }
+        }
+        
+        private async Task Enable24H2On905With3GbRam()
+        {
+            Log.Information("Enabling Windows 11 24H2 compatibility for Lumia 950 with 3GB RAM...");
+            try
+            {
+                var windowsVolume = await context.Device.GetWindowsPartition();
+                var systemRoot = Path.Combine(windowsVolume.Root, "Windows");
+                
+                // Create compatibility script
+                var scriptPath = Path.Combine(AppPaths.ArtifactDownload, "Enable24H2Compatibility.cmd");
+                var scriptContent = @"@echo off
+echo Enabling Windows 11 24H2 compatibility for Lumia 950 with 3GB RAM...
+reg load HKLM\COMPAT_SOFTWARE %1\System32\config\SOFTWARE
+reg load HKLM\COMPAT_SYSTEM %1\System32\config\SYSTEM
+
+rem Bypass RAM requirements for Windows 11 24H2
+reg add ""HKLM\COMPAT_SYSTEM\Setup\MoSetup"" /v ""AllowUpgradesWithUnsupportedTPMOrCPU"" /t REG_DWORD /d ""1"" /f
+reg add ""HKLM\COMPAT_SYSTEM\Setup\LabConfig"" /v ""BypassRAMCheck"" /t REG_DWORD /d ""1"" /f
+reg add ""HKLM\COMPAT_SYSTEM\Setup\LabConfig"" /v ""BypassTPMCheck"" /t REG_DWORD /d ""1"" /f
+reg add ""HKLM\COMPAT_SYSTEM\Setup\LabConfig"" /v ""BypassSecureBootCheck"" /t REG_DWORD /d ""1"" /f
+reg add ""HKLM\COMPAT_SYSTEM\Setup\LabConfig"" /v ""BypassCPUCheck"" /t REG_DWORD /d ""1"" /f
+
+rem Optimize for 3GB RAM
+reg add ""HKLM\COMPAT_SYSTEM\ControlSet001\Control\Session Manager\Memory Management"" /v ""FeatureSettingsOverride"" /t REG_DWORD /d ""3"" /f
+reg add ""HKLM\COMPAT_SYSTEM\ControlSet001\Control\Session Manager\Memory Management"" /v ""FeatureSettingsOverrideMask"" /t REG_DWORD /d ""3"" /f
+reg add ""HKLM\COMPAT_SOFTWARE\Microsoft\Windows NT\CurrentVersion\Virtualization"" /v ""MinVmVersionForCpuBasedMitigations"" /t REG_SZ /d ""1.0"" /f
+
+reg unload HKLM\COMPAT_SOFTWARE
+reg unload HKLM\COMPAT_SYSTEM
+echo Windows 11 24H2 compatibility enabled successfully.
+";
+                await fileSystemOperations.WriteAllTextToFile(scriptPath, scriptContent);
+                
+                // Execute the script
+                await scriptRunner.Run(parser.Parse($"run-external \"{scriptPath}\" \"{systemRoot}\""));
+                
+                Log.Information("Windows 11 24H2 compatibility enabled successfully.");
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Failed to enable Windows 11 24H2 compatibility");
+            }
         }
 
         private async Task RunScript(string path)

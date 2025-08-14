@@ -57,6 +57,9 @@ namespace Deployer.Lumia.Console
                             ImagePath = opts.WimImage,
                             SizeReservedForWindows = ByteSize.FromGigaBytes(opts.ReservedSizeForWindowsInGb),
                             UseCompact = opts.UseCompact,
+                            ApplyMrosUI = opts.ApplyMrosUI,
+                            ApplyWindows12UI = opts.ApplyWindows12UI,
+                            Allow24H2On905With3GbRam = opts.Allow24H2On905With3GbRam,
                         };
                         return deployer.Deploy();
                     },

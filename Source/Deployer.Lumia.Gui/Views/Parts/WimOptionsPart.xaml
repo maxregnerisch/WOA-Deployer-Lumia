@@ -50,9 +50,28 @@
                             </ComboBox.ItemTemplate>
                         </ComboBox>
                     </Grid>
-                </HeaderedContentControl></StackPanel>
+                </HeaderedContentControl>
+                
+                <HeaderedContentControl Header="UI Options">
+                    <StackPanel>
+                        <CheckBox Content="Apply MROS UI" 
+                                  IsChecked="{Binding ApplyMrosUI}"
+                                  ToolTip="Apply MROS UI customizations during deployment" 
+                                  Margin="0,5,0,5"/>
+                        <CheckBox Content="Apply Windows 12 UI" 
+                                  IsChecked="{Binding ApplyWindows12UI}"
+                                  ToolTip="Apply Windows 12 UI customizations during deployment" 
+                                  Margin="0,0,0,5"/>
+                        <CheckBox Content="Allow Windows 11 24H2 on Lumia 950 with 3GB RAM" 
+                                  IsChecked="{Binding Allow24H2On905With3GbRam}"
+                                  ToolTip="Enable compatibility for running Windows 11 24H2 on Lumia 950 with 3GB RAM" 
+                                  Margin="0,0,0,5"/>
+                    </StackPanel>
+                </HeaderedContentControl>
+                
+                </StackPanel>
             <TextBlock FontSize="17" TextWrapping="Wrap" VerticalAlignment="Center" Margin="4">
-                In order to deploy Windows 10 ARM to your Phone, you need to specify a Windows Image file (.wim).
+                In order to deploy Windows 10/11 ARM to your Phone, you need to specify a Windows Image file (.wim).
                 <LineBreak/>
                 If you don't know how to get one, please, check this <Hyperlink Command="{Binding OpenGetWoaCommand}" CommandParameter="https://github.com/WOA-Project/WOA-Deployer-Lumia/blob/master/Docs/GettingWoA.md">link</Hyperlink>.
             </TextBlock>
