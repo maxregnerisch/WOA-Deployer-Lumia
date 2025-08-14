@@ -28,7 +28,7 @@ jobs:
       run: msbuild Source/WOA-Deployer-Lumia.sln /p:Configuration=Release /p:Platform="Any CPU"
       
     - name: Upload GUI artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: WOA-Deployer-Lumia-GUI
         path: Source/Deployer.Lumia.Gui/bin/Release/
