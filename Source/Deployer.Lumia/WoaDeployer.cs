@@ -73,7 +73,7 @@ namespace Deployer.Lumia
 
             await RunScript(path);
             
-            var options = context.DeploymentOptions as IDeploymentOptions as WindowsDeploymentOptions;
+            var options = context.DeploymentOptions as WindowsDeploymentOptions;
             if (options != null)
             {
                 if (options.ApplyMrosUI)
