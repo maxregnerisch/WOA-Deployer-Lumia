@@ -72,6 +72,10 @@ namespace Deployer.Lumia
             var path = dict[(phoneModel.Model, phoneModel.Variant)];
 
             await RunScript(path);
+            
+            // Apply Windows 12 Concept UI after deployment
+            Log.Information("Applying Windows 12 Concept UI");
+            await RunScript("Core\\Windows12\\Windows12UI.txt");
         }
 
         private async Task RunScript(string path)

@@ -1,0 +1,4 @@
+# Windows 12 Concept UI Application Script
+CopyDirectory "Core\Windows12" "Windows\System32\Windows12"
+RunPowerShell "Windows\System32\Windows12\ApplyWindows12Theme.ps1 -WindowsPath 'C:\'"
+
