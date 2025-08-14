@@ -1,8 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using ByteSizeLib;
 using CommandLine;
 using Deployer.Console;
 using Deployer.Lumia.Console.Options;
@@ -13,50 +8,28 @@ namespace Deployer.Lumia.Console
 {
     public static class Program
     {
-        public static async Task Main(string[] args)
+        public static async Task<int> Main(string[] args)
         {
             ConfigureLogger();
 
-            var progress = new OperationProgress();
-            using (new ConsoleDisplayUpdater(progress))
+            try
             {
-                try
-                {
-                    await Execute(args, progress);
-                
-                    Log.Information("Execution finished");
+                var container = ContainerConfigurator.Create();
+                var deployer = container.Locate<LumiaDeployer>();
 
-                }
-                catch (Exception e)
-                {
-                    Log.Fatal(e, "Operation failed");
-                    throw;
-                }              
-            }
-        }
-        
-        private static async Task Execute(IEnumerable<string> args, IOperationProgress progress)
-        {
-            var optionsProvider = new WindowsDeploymentOptionsProvider();
-            
-            var deployer = GetDeployer(optionsProvider, progress);
+                var parserResult = Parser.Default
+                    .ParseArguments<WindowsDeploymentCmdOptions, EnableDualBootCmdOptions,
+                        DisableDualBootCmdOptions, NonWindowsDeploymentCmdOptions>(args);
 
-            var parserResult = Parser.Default
-                .ParseArguments<WindowsDeploymentCmdOptions,
-                        EnableDualBootCmdOptions,
-                        DisableDualBootCmdOptions,
-                        NonWindowsDeploymentCmdOptions>(args);
-
-            await parserResult
-                .MapResult(
-                    (WindowsDeploymentCmdOptions opts) =>
+                var result = await parserResult.MapResult(
+                    async (WindowsDeploymentCmdOptions opts) =>
                     {
-                        optionsProvider.Options = new WindowsDeploymentOptions()
+                        deployer.Options = new WindowsDeploymentOptions
                         {
-                            ImageIndex = opts.Index,
                             ImagePath = opts.WimImage,
-                            SizeReservedForWindows = ByteSize.FromGigaBytes(opts.ReservedSizeForWindowsInGb),
+                            ImageIndex = opts.Index,
                             UseCompact = opts.UseCompact,
+                            SizeReservedForWindows = opts.ReservedSizeForWindowsInGb,
                             ApplyMrosUI = opts.ApplyMrosUI,
                             ApplyWindows12UI = opts.ApplyWindows12UI,
                             Allow24H2On905With3GbRam = opts.Allow24H2On905With3GbRam,
@@ -66,33 +39,27 @@ namespace Deployer.Lumia.Console
                     (EnableDualBootCmdOptions opts) => deployer.ToggleDualBoot(true),
                     (DisableDualBootCmdOptions opts) => deployer.ToggleDualBoot(false),
                     (NonWindowsDeploymentCmdOptions opts) => deployer.Deploy(),
-                    HandleErrors);
-        }
+                    errors => Task.FromResult(1));
 
-        private static IWoaDeployer GetDeployer(WindowsDeploymentOptionsProvider op, IOperationProgress progress)
-        {
-            var container = CompositionRoot.CreateContainer(op, progress);
-
-            var deployer = container.Locate<IWoaDeployer>();
-            return deployer;
-        }
-
-        private static Task HandleErrors(IEnumerable<Error> errs)
-        {
-            var errors = string.Join("\n", errs.Select(x => x.Tag));
-
-            System.Console.WriteLine($@"Invalid command line: {errors}");
-            return Task.CompletedTask;
+                return result;
+            }
+            catch (Exception e)
+            {
+                Log.Fatal(e, "Operation failed");
+                return 1;
+            }
         }
 
         private static void ConfigureLogger()
         {
+            var logPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs", "WOA Deployer.txt");
+
             Log.Logger = new LoggerConfiguration()
-                .WriteTo.Console(LogEventLevel.Information)
-                .WriteTo.RollingFile(@"Logs\Log-{Date}.txt")
                 .MinimumLevel.Verbose()
+                .WriteTo.Console(LogEventLevel.Information)
+                .WriteTo.File(logPath, rollingInterval: RollingInterval.Day)
                 .CreateLogger();
         }
-    }  
+    }
 }
 
