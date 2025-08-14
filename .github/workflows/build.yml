@@ -15,8 +15,12 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
       with:
-        submodules: recursive
+        submodules: true
         fetch-depth: 0
+        
+    - name: Update submodules
+      run: |
+        git submodule update --init --recursive
     
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1.1
@@ -61,4 +65,3 @@ jobs:
         files: artifacts\*
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-

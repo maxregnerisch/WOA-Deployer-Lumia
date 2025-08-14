@@ -2,7 +2,7 @@ using ByteSizeLib;
 
 namespace Deployer.Lumia
 {
-    public class WindowsDeploymentOptions : DeploymentOptions
+    public class WindowsDeploymentOptions : IDeploymentOptions
     {
         public string ImagePath { get; set; }
         public int ImageIndex { get; set; }
@@ -13,4 +13,3 @@ namespace Deployer.Lumia
         public bool Allow24H2On905With3GbRam { get; set; }
     }
 }
-
