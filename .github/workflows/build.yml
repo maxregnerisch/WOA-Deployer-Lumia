@@ -43,7 +43,7 @@ jobs:
       shell: bash
       
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: WOA-Deployer-Lumia-Windows12
         path: artifacts/
