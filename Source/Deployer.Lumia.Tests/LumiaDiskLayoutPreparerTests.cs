@@ -1,5 +1,3 @@
-﻿using System.Threading.Tasks;
-using ByteSizeLib;
 using Deployer.Lumia.NetFx;
 using Deployer.NetFx;
 using Xunit;
@@ -10,17 +8,17 @@ namespace Deployer.Lumia.Tests
     {
         [Fact(Skip = "Don't run this")]
         [Trait("Category", "Real")]
-        public async Task Prepare()
+        public async Task Test()
         {
             //var api = new DiskApi();
+            //var operations = new DiskFilesystemOperations(api);
+            //var allocators = new SpaceAllocators();
 
-            //var allocators = new []{ new DefaultSpaceAllocator()};
-            //var operations = new FileSystemOperations();
             //var optionsProvider = new WindowsDeploymentOptionsProvider
             //{
             //    Options = new WindowsDeploymentOptions
             //    {
-            //        SizeReservedForWindows = ByteSize.FromMegaBytes(200),
+            //        SizeReservedForWindows = 200, // MB
             //    }
             //};
 
@@ -32,3 +30,4 @@ namespace Deployer.Lumia.Tests
         }       
     }
 }
+

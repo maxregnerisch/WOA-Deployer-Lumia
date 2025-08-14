@@ -59,6 +59,9 @@ namespace Deployer.Lumia.Gui.ViewModels
                 ImagePath = wimPickViewModel.WimMetadata.Path,
                 ImageIndex = wimPickViewModel.WimMetadata.SelectedDiskImage.Index,
                 UseCompact = advancedViewModel.UseCompactDeployment,
+                ApplyMrosUI = wimPickViewModel.ApplyMrosUI,
+                ApplyWindows12UI = wimPickViewModel.ApplyWindows12UI,
+                Allow24H2On905With3GbRam = wimPickViewModel.Allow24H2On905With3GbRam,
             };
 
             context.DeploymentOptions = windowsDeploymentOptions;
