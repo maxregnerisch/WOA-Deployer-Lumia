@@ -1,0 +1,76 @@
+name: Build WOA-Deployer-Lumia
+
+on:
+  push:
+    branches: [ master, develop, codegen-bot/* ]
+  pull_request:
+    branches: [ master, develop ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+        
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1.1
+      
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v1.1.1
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '6.0.x'
+        
+    - name: Restore NuGet packages
+      run: nuget restore Source/Deployer.Lumia.sln
+      
+    - name: Build solution
+      run: msbuild Source/Deployer.Lumia.sln /p:Configuration=Release /p:Platform="Any CPU"
+      
+    - name: Create artifact directory
+      run: mkdir artifacts
+      
+    - name: Copy build artifacts
+      run: |
+        cp -r Source/Deployer.Lumia.Gui/bin/Release/* artifacts/
+        cp -r Source/Deployer.Lumia/Core/Windows12 artifacts/Core/Windows12
+      shell: bash
+      
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: WOA-Deployer-Lumia-Windows12
+        path: artifacts/
+        
+    - name: Create release ZIP
+      run: |
+        cd artifacts
+        7z a -tzip ../WOA-Deployer-Lumia-Windows12.zip *
+      shell: bash
+      if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/heads/codegen-bot/'))
+      
+    - name: Create release
+      uses: softprops/action-gh-release@v1
+      if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/heads/codegen-bot/'))
+      with:
+        files: WOA-Deployer-Lumia-Windows12.zip
+        name: WOA-Deployer-Lumia Windows 12 Build
+        tag_name: windows12-build-${{ github.run_number }}
+        body: |
+          WOA-Deployer-Lumia with Windows 12 Concept UI
+          
+          This build includes:
+          - Windows 12 concept UI theme for Windows installation
+          - Support for 3GB RAM allocation
+          - Enhanced UI customizations
+          
+          Automated build from ${{ github.sha }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
