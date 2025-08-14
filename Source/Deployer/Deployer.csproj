@@ -8,13 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="ByteSize" Version="1.3.0" />
     <PackageReference Include="NETStandard.Library" Version="2.0.3" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="ByteSize">
-      <HintPath>bin\Debug\netstandard2.0\ByteSize.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>
