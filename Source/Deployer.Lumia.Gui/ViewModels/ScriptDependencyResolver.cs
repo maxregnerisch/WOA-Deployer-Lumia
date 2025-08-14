@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -51,6 +51,9 @@ namespace Deployer.Lumia.Gui.ViewModels
                 ImageIndex = wimPickViewModel.WimMetadata.SelectedDiskImage.Index,
                 ImagePath = wimPickViewModel.WimMetadata.Path,
                 UseCompact = false,
+                ApplyMrosUI = wimPickViewModel.ApplyMrosUI,
+                ApplyWindows12UI = wimPickViewModel.ApplyWindows12UI,
+                Allow24H2On905With3GbRam = wimPickViewModel.Allow24H2On905With3GbRam,
             };
 
             return deploymentContext;
@@ -70,3 +73,4 @@ namespace Deployer.Lumia.Gui.ViewModels
         }
     }
 }
+
