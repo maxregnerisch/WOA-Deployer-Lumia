@@ -44,7 +44,7 @@ jobs:
         Remove-Item -Path artifacts\*.pdb -Force -ErrorAction SilentlyContinue
     
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: WOA-Deployer-Lumia-v4.0.0
         path: artifacts\
