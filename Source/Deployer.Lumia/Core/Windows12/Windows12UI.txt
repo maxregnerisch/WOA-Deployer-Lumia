@@ -1,4 +1,19 @@
 # Windows 12 Concept UI Application Script
+
+# Create Windows 12 directories
+MakeDirectory "Windows\System32\Windows12"
+MakeDirectory "Windows\Resources\Themes\Windows12"
+MakeDirectory "Windows\Resources\Themes\Windows12\Cursors"
+MakeDirectory "Windows\Web\Wallpaper\Windows12"
+
+# Copy Windows 12 resources
 CopyDirectory "Core\Windows12" "Windows\System32\Windows12"
+
+# Apply Windows 12 theme
 RunPowerShell "Windows\System32\Windows12\ApplyWindows12Theme.ps1 -WindowsPath 'C:\'"
+
+# Apply additional Windows 12 customizations
+RunPowerShell "Windows\System32\Windows12\CustomizeExplorer.ps1"
+RunPowerShell "Windows\System32\Windows12\CustomizeTaskbar.ps1"
+RunPowerShell "Windows\System32\Windows12\CustomizeStartMenu.ps1"
 
