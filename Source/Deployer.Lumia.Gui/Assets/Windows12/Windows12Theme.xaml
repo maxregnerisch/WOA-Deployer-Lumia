@@ -1,0 +1,34 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls">
+    <!-- Windows 12 Concept Theme Colors -->
+    <Color x:Key="Windows12AccentColor">#0078D7</Color>
+    <Color x:Key="Windows12BackgroundColor">#F0F0F0</Color>
+    <Color x:Key="Windows12ForegroundColor">#202020</Color>
+    
+    <!-- Brushes -->
+    <SolidColorBrush x:Key="Windows12AccentBrush" Color="{StaticResource Windows12AccentColor}"/>
+    <SolidColorBrush x:Key="Windows12BackgroundBrush" Color="{StaticResource Windows12BackgroundColor}"/>
+    <SolidColorBrush x:Key="Windows12ForegroundBrush" Color="{StaticResource Windows12ForegroundColor}"/>
+    
+    <!-- Control Styles -->
+    <Style x:Key="Windows12ButtonStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+        <Setter Property="Background" Value="{StaticResource Windows12AccentBrush}"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="15,8"/>
+        <Setter Property="CornerRadius" Value="4"/>
+    </Style>
+    
+    <Style x:Key="Windows12TabControlStyle" TargetType="TabControl" BasedOn="{StaticResource {x:Type TabControl}}">
+        <Setter Property="Background" Value="{StaticResource Windows12BackgroundBrush}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+    
+    <Style x:Key="Windows12TabItemStyle" TargetType="TabItem" BasedOn="{StaticResource {x:Type TabItem}}">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="15,8"/>
+    </Style>
+</ResourceDictionary>
+
