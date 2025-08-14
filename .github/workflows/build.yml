@@ -12,7 +12,7 @@ jobs:
     runs-on: windows-latest
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
         
@@ -23,7 +23,7 @@ jobs:
       uses: NuGet/setup-nuget@v1.1.1
       
     - name: Setup .NET
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '6.0.x'
         
@@ -43,7 +43,7 @@ jobs:
       shell: bash
       
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: WOA-Deployer-Lumia-Windows12
         path: artifacts/
@@ -73,4 +73,3 @@ jobs:
           Automated build from ${{ github.sha }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
