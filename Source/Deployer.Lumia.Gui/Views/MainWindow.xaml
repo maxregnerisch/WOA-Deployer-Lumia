@@ -13,9 +13,14 @@
                  mc:Ignorable="d"
                  DataContext="{Binding Source={StaticResource Locator}, Path=MainViewModelBase}"
                  mah:DialogParticipation.Register="{Binding}"
-                 Title="{Binding Title}" 
+                 Title="{Binding Title} - Windows 12 Concept UI" 
                  Icon="/Assets/appicon.png"
-                 WindowStartupLocation="CenterScreen" Closing="MainWindow_OnClosing">
+                 WindowStartupLocation="CenterScreen" Closing="MainWindow_OnClosing"
+                 Background="{StaticResource Windows12BackgroundBrush}"
+                 Foreground="{StaticResource Windows12ForegroundBrush}"
+                 GlowBrush="{StaticResource Windows12AccentBrush}"
+                 BorderThickness="1"
+                 BorderBrush="{StaticResource Windows12AccentBrush}">
     <interactions:Interaction.Triggers>
         <interactions:EventTrigger EventName="Loaded">
             <interactions:EventTrigger.Actions>
@@ -69,9 +74,10 @@
         <TabControl Margin="20" Grid.Row="1" Focusable="False"
                     ItemsSource="{Binding Sections}"
                     SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
-                    IsHitTestVisible="{Binding IsBusy, Converter={StaticResource BoolNegationConverter}}">
+                    IsHitTestVisible="{Binding IsBusy, Converter={StaticResource BoolNegationConverter}}"
+                    Style="{StaticResource Windows12TabControlStyle}">
             <TabControl.ItemContainerStyle>
-                <Style TargetType="TabItem" BasedOn="{StaticResource {x:Type TabItem}}">
+                <Style TargetType="TabItem" BasedOn="{StaticResource Windows12TabItemStyle}">
                     <Setter Property="Header" Value="{Binding Converter={StaticResource MetadataConverter}, ConverterParameter='Name'}" />
                     <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                     <Setter Property="Content" Value="{Binding Value}" />

@@ -6,7 +6,7 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="SizeReservedForWindows" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">18</Value>
+      <Value Profile="(Default)">3</Value>
     </Setting>
     <Setting Name="UseCompactDeployment" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
