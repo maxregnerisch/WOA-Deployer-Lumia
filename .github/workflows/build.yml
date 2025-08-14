@@ -1,0 +1,64 @@
+name: Build WOA-Deployer-Lumia
+
+on:
+  push:
+    branches: [ master, codegen-bot/woa-deployer-v4.0.0 ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        submodules: recursive
+        fetch-depth: 0
+    
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1.1
+    
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v1.1.1
+    
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '6.0.x'
+    
+    - name: Restore NuGet packages
+      run: nuget restore "Source\WoaDeployer for Lumia.sln"
+    
+    - name: Build solution (Release)
+      run: msbuild "Source\WoaDeployer for Lumia.sln" /p:Configuration=Release /p:Platform="Any CPU"
+    
+    - name: Create artifacts directory
+      run: mkdir artifacts
+    
+    - name: Copy build artifacts
+      run: |
+        cp -r "Source\Deployer.Lumia.Gui\bin\Release\*" artifacts\
+        Remove-Item -Path artifacts\*.pdb -Force -ErrorAction SilentlyContinue
+    
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: WOA-Deployer-Lumia-v4.0.0
+        path: artifacts\
+    
+    - name: Create release
+      id: create_release
+      if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/codegen-bot/woa-deployer-v4.0.0')
+      uses: softprops/action-gh-release@v1
+      with:
+        name: WOA-Deployer-Lumia v4.0.0
+        tag_name: v4.0.0
+        draft: false
+        prerelease: false
+        files: artifacts\*
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
