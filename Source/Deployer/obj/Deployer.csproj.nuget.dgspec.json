@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\a\\WOA-Deployer-Lumia\\WOA-Deployer-Lumia\\Source\\Deployer\\Deployer.csproj": {}
+    "/workspace/Source/Deployer/Deployer.csproj": {}
   },
   "projects": {
-    "D:\\a\\WOA-Deployer-Lumia\\WOA-Deployer-Lumia\\Source\\Deployer\\Deployer.csproj": {
+    "/workspace/Source/Deployer/Deployer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\a\\WOA-Deployer-Lumia\\WOA-Deployer-Lumia\\Source\\Deployer\\Deployer.csproj",
+        "projectUniqueName": "/workspace/Source/Deployer/Deployer.csproj",
         "projectName": "Deployer",
-        "projectPath": "D:\\a\\WOA-Deployer-Lumia\\WOA-Deployer-Lumia\\Source\\Deployer\\Deployer.csproj",
+        "projectPath": "/workspace/Source/Deployer/Deployer.csproj",
         "packagesPath": "/root/.nuget/packages/",
-        "outputPath": "D:\\a\\WOA-Deployer-Lumia\\WOA-Deployer-Lumia\\Source\\Deployer\\obj\\",
+        "outputPath": "/workspace/Source/Deployer/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/root/.nuget/NuGet/NuGet.Config"
@@ -58,7 +58,7 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/6.0.413/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/9.0.303/RuntimeIdentifierGraph.json"
         }
       }
     }
